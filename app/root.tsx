@@ -8,6 +8,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import Menu from "~/components/Menu";
+import logoDark from "./butacas/logo-dark.svg";
+import logoLight from "./butacas/logo-light.svg";
+
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -33,7 +37,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <main className="flex items-center justify-center pt-16 pb-4">
+          <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
+            <header className="flex flex-col items-center gap-9">
+              <div className="w-[400px] max-w-[100vw] p-4">
+                <img
+                  src={logoLight}
+                  alt="React Router"
+                  className="block w-full dark:hidden"
+                />
+                <img
+                  src={logoDark}
+                  alt="React Router"
+                  className="hidden w-full dark:block"
+                />
+              </div>
+            </header>
+
+            <Menu />
+            {children}
+          </div>
+        </main>
         <ScrollRestoration />
         <Scripts />
       </body>
