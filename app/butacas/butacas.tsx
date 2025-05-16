@@ -6,12 +6,7 @@ export function Butacas() {
   // Estado para las butacas
   const [butacas, setButacas] = useState<any[]>([]);
   const [butaca, setButaca] = useState<any>(null);
-  const [numero, setNumero] = useState(0);
-  const [fila, setFila] = useState(0);
-  const [roomName, setRoomName] = useState('');
-  const [editingId, setEditingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [roomId, setRoomId] = useState(0);
 
   // Datos iniciales (simulando una API)
   useEffect(() => {
