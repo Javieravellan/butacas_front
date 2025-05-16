@@ -1,17 +1,11 @@
 
 import { useState, useEffect } from 'react';
-
-const rooms = [
-  { id: 1, name: 'Sala 1' },
-  { id: 2, name: 'Sala 2' },
-  { id: 3, name: 'Sala 3' },
-  { id: 4, name: 'Sala 4' },
-  { id: 5, name: 'Sala 5' },
-]
+import FormButaca from '../components/butacas/FormButaca';
 
 export function Butacas() {
   // Estado para las butacas
   const [butacas, setButacas] = useState<any[]>([]);
+  const [butaca, setButaca] = useState<any>(null);
   const [numero, setNumero] = useState(0);
   const [fila, setFila] = useState(0);
   const [roomName, setRoomName] = useState('');
@@ -35,40 +29,9 @@ export function Butacas() {
     butaca.fila.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Crear o actualizar butaca
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    
-    if (editingId) {
-      // Actualizar
-      setButacas(butacas.map(butaca =>
-        butaca.id === editingId ? { ...butaca, numero, fila, roomName, roomId, status } : butaca
-      ));
-      setEditingId(null);
-    } else {
-      // Crear
-      const newButaca = {
-        id: Date.now(),
-        numero,
-        fila,
-        roomName,
-        status: true
-      };
-      setButacas([...butacas, newButaca]);
-    }
-
-    // Limpiar formulario
-    setNumero(0);
-    setFila(0);
-    setRoomName('');
-  };
-
   // Editar butaca
   const handleEdit = (butaca: any) => {
-    setNumero(butaca.numero);
-    setFila(butaca.fila);
-    setRoomName(butaca.roomName);
-    setEditingId(butaca.id);
+    setButaca(butaca);
   };
 
   // Eliminar butaca
@@ -88,68 +51,27 @@ export function Butacas() {
     ));
   };
 
+  const onSentButaca = (butaca: any) => {
+    const index = butacas.findIndex(b => b.id == butaca.id);
+    console.debug('index', index);
+    if (index !== -1) {
+      // Actualizar butaca existente
+      const updatedButacas = [...butacas];
+      updatedButacas[index] = butaca;
+      setButacas(updatedButacas);
+    } else {
+      // Agregar nueva butaca
+      setButacas([...butacas, butaca]);
+    }
+    setButaca(null); // Limpiar el formulario después de enviar
+  }
+
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-2xl font-bold text-center mb-6">Gestión de Butacas</h1>
       
       {/* Formulario */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">
-          {editingId ? 'Editar Butaca' : 'Agregar Nueva Butaca'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Fila</label>
-              <input
-                type="text"
-                value={fila}
-                onChange={(e) => setFila(e.target.value as any)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                required
-                maxLength={1}
-                placeholder="Ej: A"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Número</label>
-              <input
-                type="text"
-                value={numero}
-                onChange={(e) => setNumero(e.target.value as any)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                required
-                placeholder="Ej: 1"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Tipo</label>
-              <select
-                value={roomId}
-                onChange={(e) => setRoomName(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              >
-                {rooms.map((room: any) => (
-                  <option key={room.id} value={room.id}>
-                    {room.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              {editingId ? 'Actualizar' : 'Agregar'}
-            </button>
-          </div>
-        </form>
-      </div>
+      <FormButaca onSent={onSentButaca} butaca={butaca} />
       
       {/* Buscador */}
       <div className="mb-6">
@@ -187,7 +109,7 @@ export function Butacas() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => toggleEstado(butaca.id)}
+                      onClick={() => toggleEstado(butaca)}
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full cursor-pointer
                         ${butaca.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                     >
