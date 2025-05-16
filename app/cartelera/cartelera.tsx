@@ -84,7 +84,7 @@ export default function Cartelera() {
   // Formatear fecha para mostrar
   const formatDate = (dateString: string) => {
     try {
-      return format(parseISO(dateString), 'dd/MM/yyyy HH:mm');
+      return format(parseISO(dateString), 'dd/MMM/yyyy HH:mm');
     } catch {
       return dateString;
     }
