@@ -12,8 +12,8 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
     const { onSent, butaca } = props;
     const [numero, setNumero] = useState(0);
     const [fila, setFila] = useState(0);
-    const [roomName, setRoomName] = useState('');
-    const [roomId, setRoomId] = useState(0);
+    const [roomName, setRoomName] = useState(rooms[0].name);
+    const [roomId, setRoomId] = useState(rooms[0].id);
     const [status, setStatus] = useState(true);
 
       // Actualizar el formulario cuando la prop `butaca` cambie
@@ -28,8 +28,8 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
         // Limpiar el formulario si no hay butaca
             setNumero(0);
             setFila(0);
-            setRoomName('');
-            setRoomId(0);
+            setRoomName(rooms[0].name);
+            setRoomId(rooms[0].id);
             setStatus(true);
         }
     }, [butaca]);
@@ -54,6 +54,11 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
 
             // enviar butaca al padre luego del envío
             onSent(newButaca);
+            setNumero(0);
+            setFila(0);
+            setRoomName(rooms[0].name);
+            setRoomId(rooms[0].id);
+            setStatus(true);
         }
     }
 
@@ -61,6 +66,7 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
         const { name, value } = e.target;
         console.debug({ name, value });
         const room = rooms.find((room: any) => room.id === Number(value));
+        console.debug(room?.name)
         setRoomName(room?.name || '');
         setRoomId(Number(value));
     }

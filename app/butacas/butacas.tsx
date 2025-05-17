@@ -36,6 +36,7 @@ export function Butacas() {
 
   // Cambiar estado de disponibilidad
   const toggleEstado = (id: number) => {
+    console.debug('id', id);
     setButacas(butacas.map(butaca =>
       butaca.id === id
         ? {
@@ -56,6 +57,7 @@ export function Butacas() {
       setButacas(updatedButacas);
     } else {
       // Agregar nueva butaca
+      console.debug('butaca', butaca);
       setButacas([...butacas, butaca]);
     }
     setButaca(null); // Limpiar el formulario después de enviar
@@ -104,7 +106,7 @@ export function Butacas() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => toggleEstado(butaca)}
+                      onClick={() => toggleEstado(butaca.id)}
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full cursor-pointer
                         ${butaca.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                     >
