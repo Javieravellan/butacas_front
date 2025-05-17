@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
+import FormCartelera from '~/components/cartelera/FormCartelera';
 
 export default function Cartelera() {
   // Estado para las carteleras
   const [carteleras, setCarteleras] = useState<any[]>([]);
-  const [status, setStatus] = useState('Activa');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [editingId, setEditingId] = useState(null);
+  const [cartelera, setCartelera] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Datos iniciales (simulando una API)
@@ -15,13 +13,13 @@ export default function Cartelera() {
     const initialData: any[] = [
       { 
         id: 1, 
-        status: 'Activa', 
+        status: true, 
         start_time: '2023-06-01T10:00:00', 
         end_time: '2023-06-30T22:00:00' 
       },
       { 
         id: 2, 
-        status: 'Inactiva', 
+        status: false, 
         start_time: '2023-07-01T10:00:00', 
         end_time: '2023-07-31T22:00:00' 
       },
@@ -31,49 +29,28 @@ export default function Cartelera() {
 
   // Filtrar carteleras
   const filteredCarteleras = carteleras.filter(cartelera =>
-    cartelera.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cartelera.start_time.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cartelera.end_time.toLowerCase().includes(searchTerm.toLowerCase())
+    cartelera?.start_time?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cartelera?.end_time?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Crear o actualizar cartelera
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    
-    if (editingId) {
-      // Actualizar
-      setCarteleras(carteleras.map(cartelera =>
-        cartelera.id === editingId ? { 
-          ...cartelera, 
-          status,
-          start_time: startTime,
-          end_time: endTime
-        } : cartelera
-      ));
-      setEditingId(null);
+  const onSent = (e: any) => {
+    console.debug('cartelera', e);
+    const index = carteleras.findIndex(c => c.id === cartelera?.id);
+    if (index !== -1) {
+      // Actualizar cartelera existente
+      const updatedCarteleras = [...carteleras];
+      updatedCarteleras[index] = cartelera;
+      setCarteleras(updatedCarteleras);
     } else {
-      // Crear
-      const newCartelera = {
-        id: Date.now(),
-        status,
-        start_time: startTime,
-        end_time: endTime
-      };
-      setCarteleras([...carteleras, newCartelera]);
+      setCarteleras([...carteleras, cartelera]);
     }
-
-    // Limpiar formulario
-    setStatus('Activa');
-    setStartTime('');
-    setEndTime('');
+    setCartelera(null); // Limpiar el formulario después de enviar
   };
 
   // Editar cartelera
   const handleEdit = (cartelera: any) => {
-    setStatus(cartelera.status);
-    setStartTime(cartelera.start_time);
-    setEndTime(cartelera.end_time);
-    setEditingId(cartelera.id);
+    setCartelera(cartelera);
   };
 
   // Eliminar cartelera
@@ -95,59 +72,7 @@ export default function Cartelera() {
       <h1 className="text-2xl font-bold text-center mb-6">Gestión de Carteleras</h1>
       
       {/* Formulario */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">
-          {editingId ? 'Editar Cartelera' : 'Agregar Nueva Cartelera'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Estado</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                required
-              >
-                <option value="Activa">Activa</option>
-                <option value="Inactiva">Inactiva</option>
-                <option value="Pendiente">Pendiente</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha/Hora Inicio</label>
-              <input
-                type="datetime-local"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                required
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha/Hora Fin</label>
-              <input
-                type="datetime-local"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              {editingId ? 'Actualizar' : 'Agregar'}
-            </button>
-          </div>
-        </form>
-      </div>
+      <FormCartelera onSent={onSent} cartelera={cartelera} />
       
       {/* Buscador */}
       <div className="mb-6">
