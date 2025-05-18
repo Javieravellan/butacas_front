@@ -44,6 +44,10 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
 
     }
 
+    function handleToggle(value: boolean) {
+        setStatus(value ? 1 : 0);
+    }
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">
@@ -51,19 +55,6 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Estado</label>
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(Number(e.target.value))}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                            required
-                        >
-                            <option value="1">Activa</option>
-                            <option value="0">Inactiva</option>
-                        </select>
-                    </div>
-
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Fecha/Hora Inicio</label>
                         <input
@@ -85,6 +76,10 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
                             required
                         />
                     </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Habilitar</label>
+                        <SimpleToggle value={status==1} onChange={handleToggle} />
+                    </div>
                 </div>
 
                 <div className="flex justify-end">
@@ -99,3 +94,32 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
         </div>
     );
 }
+
+const SimpleToggle = (props: any) => {
+    const { value, onChange } = props;
+    const [isOn, setIsOn] = useState(value);
+
+    useEffect(() => {setIsOn(value)}, [value])
+    function handleToggle() {
+        setIsOn(!isOn);
+        if (onChange) {
+            onChange(!isOn);
+        }
+    }
+    
+    return (
+        <button type="button" style={{verticalAlign: "baseline", marginTop: "0.5rem"}}
+        onClick={() => handleToggle()}
+        className={`w-16 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
+            isOn ? 'bg-indigo-600' : 'bg-gray-300'
+        }`}
+        aria-pressed={isOn}
+        >
+        <span
+            className={`bg-white w-7 h-7 rounded-full shadow-md transform transition-transform duration-300 ${
+            isOn ? 'translate-x-full' : 'translate-x-0'
+            }`}
+        />
+        </button>
+    );
+};
