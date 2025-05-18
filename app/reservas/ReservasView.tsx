@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ReservaForm from "~/components/reservas/FormReserva";
 import ReservaList from "~/components/reservas/ReservasList";
+import { getBillboardToday } from "~/services/billboard.service";
 
 export default function ReservasPage() {
     const [reservas, setReservas] = useState<any[]>([]);
@@ -15,8 +16,8 @@ export default function ReservasPage() {
             customerId: 101,
             customerName: 'Juan Pérez',
             seats: [
-                { id: 1, number: 'A1', rowNumber: 'A', status: 'Reservado' },
-                { id: 2, number: 'A2', rowNumber: 'A', status: 'Reservado' }
+                { id: 1, number: 1, rowNumber: 1, status: false },
+                { id: 2, number: 2, rowNumber: 1, status: false }
             ],
             movie: { name: 'Avengers: Endgame', genre: 'Acción' }
         }
@@ -24,6 +25,10 @@ export default function ReservasPage() {
 
     useEffect(() => {
         setReservas(initialData);
+        // obtener billboard data
+        getBillboardToday()
+        .then(console.debug)
+        .catch(console.error);
     }, []);
 
     const handleSave = (reservaData: any) => {

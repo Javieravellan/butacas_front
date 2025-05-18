@@ -89,6 +89,78 @@ const ReservaForm = (props: { onSave: (e:any) => void, initialData: any }) => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Datos básicos */}
+
+                {/* Datos del cliente */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Cédula</label>
+                        <input
+                            type="text" maxLength={10}
+                            pattern="[0-9]*"
+                            name="customerId"
+                            value={formData.customerId}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Nombre Cliente</label>
+                        <input
+                            type="text"
+                            name="customerName"
+                            value={formData.customerName}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Apellidos</label>
+                        <input
+                            type="text"
+                            name="customerLastName"
+                            value={formData.customerName}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Correo</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.customerName}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={formData.customerName}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Edad</label>
+                        <input
+                            type="tel"
+                            name="phoneNumber"
+                            value={formData.customerName}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        />
+                    </div>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Fecha</label>
@@ -108,33 +180,6 @@ const ReservaForm = (props: { onSave: (e:any) => void, initialData: any }) => {
                             type="time"
                             name="showTime"
                             value={formData.showTime}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-                            required
-                        />
-                    </div>
-                </div>
-
-                {/* Datos del cliente */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">ID Cliente</label>
-                        <input
-                            type="text"
-                            name="customerId"
-                            value={formData.customerId}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Nombre Cliente</label>
-                        <input
-                            type="text"
-                            name="customerName"
-                            value={formData.customerName}
                             onChange={handleChange}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             required
