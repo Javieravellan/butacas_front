@@ -25,10 +25,6 @@ export default function ReservasPage() {
 
     useEffect(() => {
         setReservas(initialData);
-        // obtener billboard data
-        getBillboardToday()
-        .then(console.debug)
-        .catch(console.error);
     }, []);
 
     const handleSave = (reservaData: any) => {
