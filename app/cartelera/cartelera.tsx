@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { format, parseISO } from 'date-fns';
 import FormCartelera from '~/components/cartelera/FormCartelera';
+import { formatDate } from '~/utils';
 
 export default function Cartelera() {
   // Estado para las carteleras
@@ -55,15 +55,6 @@ export default function Cartelera() {
   // Eliminar cartelera
   const handleDelete = (id: number) => {
     setCarteleras(carteleras.filter(cartelera => cartelera.id !== id));
-  };
-
-  // Formatear fecha para mostrar
-  const formatDate = (dateString: string) => {
-    try {
-      return format(parseISO(dateString), 'dd/MMM/yyyy HH:mm');
-    } catch {
-      return dateString;
-    }
   };
 
   return (
