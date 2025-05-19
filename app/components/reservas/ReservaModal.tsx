@@ -1,0 +1,167 @@
+import React, { useState } from 'react';
+import type { Billboard } from '~/model/billboard.model';
+import type { BillboardMovie } from '~/model/billboard_movie.model';
+import { getBillboardToday } from '~/services/billboard.service';
+import { onlyHours } from '~/utils';
+import { Seat } from './Seat';
+
+const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose: any, onSubmit: any, funciones: any[] }) => {
+    const [formData, setFormData] = useState<any | null>({
+        showTime: '',
+        customerId: '',
+        customerName: '',
+        phoneNumber: '',
+        customerEmail: '',
+        billboardMovieId: '',
+        customerAge: '',
+        seats: [],
+        movie: { name: '', genre: '' }
+    });
+    const [billboard, setBillboard] = useState<Billboard | null>(null);
+    const [functionSelected, setFunctionSelected] = useState<BillboardMovie | null>(null);
+    if (billboard == null) {
+        getBillboardToday()
+            .then(setBillboard)
+            .catch(console.error);
+    }
+
+    const onSelectMovie = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        billboard?.billboardMovies?.filter((funcion: BillboardMovie) => {
+            if (funcion.id === Number(value)) {
+                setFunctionSelected(funcion);
+                setFormData({
+                    ...formData,
+                    [name]: value,
+                    showTime: funcion.showTime,
+                    movie: { name: funcion.movie.name, genre: funcion.movie.genre },
+                    //seats: funcion.room.seats.filter((seat: any) => seat.status === false)
+                });
+            }
+        });
+    };
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value})
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(formData);
+        setFormData(null);
+        onClose();
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-10 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[600px]">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Nueva Reserva</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Nombre del Cliente</label>
+                            <input
+                                type="text"
+                                name="customerName"
+                                value={formData.customerName}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">E-Mail</label>
+                            <input
+                                type="email"
+                                name="customerEmail"
+                                value={formData.customerEmail}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input
+                                type="tel"
+                                name="phoneNumber"
+                                maxLength={13}
+                                pattern="[0-9]*"
+                                placeholder="Ej: 0987654321"
+                                value={formData.phoneNumber}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">ID del Cliente</label>
+                            <input
+                                name="customerId"
+                                type="text" maxLength={10}
+                                pattern="[0-9]*"
+                                value={formData.customerId}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Edad</label>
+                            <input
+                                name="customerAge"
+                                type="tel" maxLength={3}
+                                pattern="[0-9]*"
+                                value={formData.customerAge}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            />
+                        </div>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Películas</label>
+                        <select
+                            name="billboardMovieId"
+                            value={formData.billboardMovieId}
+                            onChange={onSelectMovie}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            required
+                        >
+                            <option value="">Selecciona una función</option>
+                            {billboard?.billboardMovies?.map((funcion: BillboardMovie) => (
+                                <option key={funcion.id} value={funcion.id}>
+                                    {`${funcion.movie.name} - ${funcion.room.name} - ${onlyHours(funcion.showTime)}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Elegir asientos</label>
+                        <div className="flex flex-wrap gap-2">
+                            <Seat items={functionSelected?.room.seats!} />
+                        </div>
+                    </div>
+                    <div className="flex justify-end">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-indigo-600 text-white rounded"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default ReservaModal;

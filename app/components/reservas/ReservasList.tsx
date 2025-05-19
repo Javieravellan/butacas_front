@@ -1,8 +1,12 @@
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useState } from 'react';
+import ReservaModal from './ReservaModal';
 
 const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
     const { reservas, onEdit, onDelete } = props;
+    const [showModal, setShowModal] = useState(false);
+    
     const formatDateTime = (date: any, time: any) => {
         try {
             const dateObj = new Date(`${date}T${time}`);
@@ -12,8 +16,22 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
         }
     };
 
+    const handleAdd = (data: any) => {
+        console.debug(data);
+        setShowModal(false);
+    };
+
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="flex justify-between items-center p-4">
+                <h2 className="text-lg font-medium text-gray-900">Reservas del día</h2>
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700"
+                >
+                    Agregar Reserva
+                </button>
+            </div>
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
@@ -76,6 +94,13 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
                     )}
                 </tbody>
             </table>
+
+            <ReservaModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSubmit={handleAdd}
+                funciones={null!}
+            />
         </div>
     );
 };
