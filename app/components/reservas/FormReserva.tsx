@@ -138,7 +138,7 @@ const ReservaForm = (props: { onSave: (e: any) => void, initialData: any }) => {
                 {/* Selección de película */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Películas disponibles</label>
-                    <Accordion items={billboard?.billboardMovies!} />
+                    {!billboard ? <div className='mt-2 text-gray-600'>No se encontraron registros para el día actual.</div> : <Accordion items={billboard?.billboardMovies!} />}
                 </div>
 
                 <div className="flex justify-end pt-4">
