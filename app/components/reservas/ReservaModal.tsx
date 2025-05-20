@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Billboard } from '~/model/billboard.model';
 import type { BillboardMovie } from '~/model/billboard_movie.model';
 import { getBillboardToday } from '~/services/billboard.service';
@@ -19,11 +19,12 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
     });
     const [billboard, setBillboard] = useState<Billboard | null>(null);
     const [functionSelected, setFunctionSelected] = useState<BillboardMovie | null>(null);
-    if (billboard == null) {
+
+    useEffect(() => {
         getBillboardToday()
             .then(setBillboard)
             .catch(console.error);
-    }
+    }, [])
 
     const onSelectMovie = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -43,7 +44,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value})
+        setFormData({ ...formData, [name]: value })
     }
 
     const handleSubmit = (e: React.FormEvent) => {
