@@ -1,56 +1,45 @@
 import { useEffect, useState } from "react";
+import { AppContext } from "~/components/reservas/AppReservaContext";
 import ReservaList from "~/components/reservas/ReservasList";
+import { getAllBookingsToday } from "~/services/billboard.service";
 
 export default function ReservasPage() {
-    const [reservas, setReservas] = useState<any[]>([]);
-    const [editingReserva, setEditingReserva] = useState<any>(null);
+  const [reservas, setReservas] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  
+  const reservasContext = {
+    reservas,
+    error,
+    refreshReservas: async () => {}
+  };
 
-    // Datos de ejemplo
-    const initialData: any[] = [
-        {
-            id: 1,
-            date: '2023-06-15',
-            showTime: '18:00',
-            customerId: 101,
-            customerName: 'Juan Pérez',
-            seats: [
-                { id: 1, number: 1, rowNumber: 1, status: false },
-                { id: 2, number: 2, rowNumber: 1, status: false }
-            ],
-            movie: { name: 'Avengers: Endgame', genre: 'Acción' }
-        }
-    ];
+  const fetchReservas = async () => {
+    try {
+        setError(null);
+        const response = await getAllBookingsToday();
+        console.debug(response);
+        setReservas(response);
+      }
+      catch (error) {
+        setError('Error fetching reservas: ' + error);
+      }
+  }
 
-    useEffect(() => {
-        setReservas(initialData);
-    }, []);
+  useEffect(() => { fetchReservas() }, []);
 
-    const handleSave = (reservaData: any) => {
-        if (editingReserva) {
-            setReservas(reservas.map(r => r.id === editingReserva.id ? reservaData : r));
-        } else {
-            setReservas([...reservas, { ...reservaData, id: Date.now() }]);
-        }
-        setEditingReserva(null);
-    };
+  const handleDelete = (id: number) => {
+  };
 
-    const handleDelete = (id: number) => {
-        setReservas(reservas.filter(r => r.id !== id));
-    };
-
-    return (
-    <div className="container mx-auto p-4 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-8 text-center">Gestión de Reservas</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
-        <div className="lg:col-span-2">
-          <ReservaList 
-            reservas={reservas} 
-            onEdit={setEditingReserva} 
-            onDelete={handleDelete} 
-          />
+  return (
+    <AppContext.Provider value={{...reservasContext, refreshReservas: fetchReservas}}>
+      <div className="container mx-auto p-4 max-w-7xl">
+        <h1 className="text-3xl font-bold mb-8 text-center">Gestión de Reservas</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+          <div className="lg:col-span-2">
+            <ReservaList />
+          </div>
         </div>
       </div>
-    </div>
+    </AppContext.Provider>
   );
 }

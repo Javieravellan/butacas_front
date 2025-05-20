@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import type { Billboard } from '~/model/billboard.model';
 import type { BillboardMovie } from '~/model/billboard_movie.model';
-import { getBillboardToday } from '~/services/billboard.service';
+import { createBooking, getBillboardToday } from '~/services/billboard.service';
 import { onlyHours } from '~/utils';
 import { Seat } from './Seat';
+import ApiButton from '../ApiButton';
+import { AppContext } from './AppReservaContext';
 
-const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose: any, onSubmit: any, funciones: any[] }) => {
+const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) => {
     const [formData, setFormData] = useState<any | null>({
         documentNumber: '',
         customerName: '',
@@ -17,6 +19,10 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
     });
     const [billboard, setBillboard] = useState<Billboard | null>(null);
     const [functionSelected, setFunctionSelected] = useState<BillboardMovie | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    // Context global de las reservas
+    const { refreshReservas } = useContext(AppContext);
 
     useEffect(() => {
         getBillboardToday()
@@ -24,9 +30,6 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
             .catch(console.error);
     }, [])
 
-    useEffect(() => {
-        console.debug(formData)
-    })
     const onSelectMovie = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         billboard?.billboardMovies?.filter((funcion: BillboardMovie) => {
@@ -49,12 +52,17 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
         setFormData({ ...formData, seatIds });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('formData', formData);
-        //onSubmit(formData);
-        setFormData(null);
-        onClose();
+    const handleSubmit = async () => {
+        try {
+            setError(null)
+            await createBooking(formData)
+            setFunctionSelected(null);
+            setFormData(null);
+            refreshReservas(); // actualiza la lista de reservas
+            onClose();
+        } catch (error) {
+            setError('Error reservando asientos:' + error);
+        }
     };
 
     if (!isOpen) return null;
@@ -63,7 +71,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
         <div className="fixed inset-0 bg-gray-600 bg-opacity-10 flex justify-center items-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-[600px]">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Nueva Reserva</h2>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">ID del Cliente</label>
@@ -71,7 +79,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                                 name="documentNumber"
                                 type="text" maxLength={10}
                                 pattern="[0-9]*"
-                                value={formData.documentNumber}
+                                value={formData?.documentNumber}
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             />
@@ -81,7 +89,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                             <input
                                 type="text"
                                 name="customerName"
-                                value={formData.customerName}
+                                value={formData?.customerName}
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                                 required
@@ -92,7 +100,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                             <input
                                 type="email"
                                 name="customerEmail"
-                                value={formData.customerEmail}
+                                value={formData?.customerEmail}
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                                 required
@@ -106,7 +114,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                                 maxLength={13}
                                 pattern="[0-9]*"
                                 placeholder="Ej: 0987654321"
-                                value={formData.phoneNumber}
+                                value={formData?.phoneNumber}
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             />
@@ -117,7 +125,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                                 name="customerAge"
                                 type="tel" maxLength={3}
                                 pattern="[0-9]*"
-                                value={formData.customerAge}
+                                value={formData?.customerAge}
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             />
@@ -127,7 +135,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                         <label className="block text-sm font-medium text-gray-700">Películas</label>
                         <select
                             name="billboardMovieId"
-                            value={formData.billboardMovieId}
+                            value={formData?.billboardMovieId}
                             onChange={onSelectMovie}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             required
@@ -154,12 +162,10 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                         >
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-indigo-600 text-white rounded"
-                        >
-                            Guardar
-                        </button>
+                        <ApiButton onClick={handleSubmit} />
+                    </div>
+                    <div className="mt-4">
+                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                     </div>
                 </form>
             </div>

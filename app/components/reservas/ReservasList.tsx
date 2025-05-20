@@ -1,26 +1,38 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import ReservaModal from './ReservaModal';
-import { formatDate } from '~/utils';
+import { onlyHours } from '~/utils';
+import { AppContext } from './AppReservaContext';
 
-const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
-    const { reservas, onEdit, onDelete } = props;
+const ReservaList = () => {
     const [showModal, setShowModal] = useState(false);
+    const [lastModified, setLastModified] = useState(new Date());
+    const { reservas, refreshReservas } = useContext(AppContext);
     
-    const handleAdd = (data: any) => {
-        console.debug(data);
-        setShowModal(false);
-    };
-
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="flex justify-between items-center p-4">
-                <h2 className="text-lg font-medium text-gray-900">Reservas del día</h2>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700"
-                >
-                    Agregar Reserva
-                </button>
+                <div className="">
+                    <h2 className="text-lg font-medium text-gray-900">Reservas del día</h2>
+                    <p className="text-sm text-gray-500">Total: {reservas.length}</p>
+                    <p className="text-sm text-gray-500">Última actualización: {lastModified.toLocaleString()}</p>
+                </div>
+                <div className="">
+                    <button className='px-4 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500'
+                        onClick={() => {
+                            setLastModified(new Date())
+                            refreshReservas();
+                        }}
+                    >
+                        Refrescar
+                    </button>&nbsp;
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700"
+                    >
+                        Agregar Reserva
+                    </button>
+                </div>
+                
             </div>
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -37,15 +49,16 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
                         reservas.map((reserva: any) => (
                             <tr key={reserva.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm font-medium text-gray-900">{reserva.customerName}</div>
-                                    <div className="text-xs text-gray-500">ID: {reserva.customerId}</div>
+                                    <div className="text-sm font-medium text-gray-900">{reserva.customer.name}</div>
+                                    <div className="text-xs text-gray-500">ID: {reserva.customer.documentNumber}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="text-sm font-medium">{reserva.movie.name}</div>
                                     <div className="text-xs text-gray-500">{reserva.movie.genre}</div>
+                                    <div className="text-xs text-gray-500">{reserva.roomName}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm">{formatDate(reserva.showTime)}</div>
+                                    <div className="text-sm">{onlyHours(reserva.showTime)}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex flex-wrap gap-1">
@@ -61,13 +74,6 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button
-                                        onClick={() => onEdit(reserva)}
-                                        className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => onDelete(reserva.id)}
                                         className="text-red-600 hover:text-red-900"
                                     >
                                         Eliminar
@@ -88,8 +94,6 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
             <ReservaModal
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
-                onSubmit={handleAdd}
-                funciones={null!}
             />
         </div>
     );

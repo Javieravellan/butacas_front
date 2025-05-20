@@ -12,3 +12,34 @@ export async function getBillboardToday() {
     }
     return data;
 }
+
+export async function createBooking(booking: any) {
+    var response = await fetch("/api/v1/bookings", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(booking),
+    });
+
+    if (!response.ok) {
+        throw new Error("Error creating booking");
+    }
+}
+
+export async function getAllBookingsToday() {
+    var response = await fetch("/api/v1/bookings/today", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    var data = await response.json();
+    if (!response.ok) {
+        const error = await response.json();
+        console.error("Error fetching bookings data:", error);
+        throw new Error(error.toString());
+    }
+    return data;
+}
