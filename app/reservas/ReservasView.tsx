@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import ReservaForm from "~/components/reservas/FormReserva";
 import ReservaList from "~/components/reservas/ReservasList";
-import { getBillboardToday } from "~/services/billboard.service";
 
 export default function ReservasPage() {
     const [reservas, setReservas] = useState<any[]>([]);
@@ -44,17 +42,7 @@ export default function ReservasPage() {
     <div className="container mx-auto p-4 max-w-7xl">
       <h1 className="text-3xl font-bold mb-8 text-center">Gestión de Reservas</h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Formulario */}
-        <div className="lg:col-span-1">
-          <ReservaForm 
-            onSave={handleSave} 
-            initialData={editingReserva} 
-            key={editingReserva?.id || 'new'}
-          />
-        </div>
-        
-        {/* Lista */}
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
         <div className="lg:col-span-2">
           <ReservaList 
             reservas={reservas} 
