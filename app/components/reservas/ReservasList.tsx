@@ -1,21 +1,11 @@
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { useState } from 'react';
 import ReservaModal from './ReservaModal';
+import { formatDate } from '~/utils';
 
 const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
     const { reservas, onEdit, onDelete } = props;
     const [showModal, setShowModal] = useState(false);
     
-    const formatDateTime = (date: any, time: any) => {
-        try {
-            const dateObj = new Date(`${date}T${time}`);
-            return format(dateObj, "dd/MM/yyyy HH:mm", { locale: es });
-        } catch {
-            return `${date} ${time}`;
-        }
-    };
-
     const handleAdd = (data: any) => {
         console.debug(data);
         setShowModal(false);
@@ -55,7 +45,7 @@ const ReservaList = (props: { reservas: any, onEdit: any, onDelete: any }) => {
                                     <div className="text-xs text-gray-500">{reserva.movie.genre}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm">{formatDateTime(reserva.date, reserva.showTime)}</div>
+                                    <div className="text-sm">{formatDate(reserva.showTime)}</div>
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex flex-wrap gap-1">
