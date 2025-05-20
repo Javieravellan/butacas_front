@@ -4,10 +4,12 @@ interface AppReservaContext {
     reservas: any[];
     error: String|null,
     refreshReservas: () => Promise<void>;
+    deleteReserva: (id: number) => Promise<void>;
 }
 
 export const AppContext = createContext<AppReservaContext>({
     reservas: [],
     error: null,
-    refreshReservas: async () => {}
+    refreshReservas: async () => {},
+    deleteReserva: async (id: number) => {}
 })

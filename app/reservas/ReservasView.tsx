@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AppContext } from "~/components/reservas/AppReservaContext";
 import ReservaList from "~/components/reservas/ReservasList";
-import { getAllBookingsToday } from "~/services/billboard.service";
+import { deleteBooking, getAllBookingsToday } from "~/services/billboard.service";
 
 export default function ReservasPage() {
   const [reservas, setReservas] = useState<any[]>([]);
@@ -10,7 +10,16 @@ export default function ReservasPage() {
   const reservasContext = {
     reservas,
     error,
-    refreshReservas: async () => {}
+    refreshReservas: async () => {},
+    deleteReserva: async (id: number) => {
+      try {
+        setError(null);
+        await deleteBooking(id);
+        setReservas(reservas.filter((reserva) => reserva.id !== id));
+      } catch (error) {
+        setError('Error deleting reserva: ' + error);
+      }
+    }
   };
 
   const fetchReservas = async () => {
@@ -26,9 +35,6 @@ export default function ReservasPage() {
   }
 
   useEffect(() => { fetchReservas() }, []);
-
-  const handleDelete = (id: number) => {
-  };
 
   return (
     <AppContext.Provider value={{...reservasContext, refreshReservas: fetchReservas}}>

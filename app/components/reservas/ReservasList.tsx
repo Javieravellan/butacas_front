@@ -6,7 +6,7 @@ import { AppContext } from './AppReservaContext';
 const ReservaList = () => {
     const [showModal, setShowModal] = useState(false);
     const [lastModified, setLastModified] = useState(new Date());
-    const { reservas, refreshReservas } = useContext(AppContext);
+    const { reservas, refreshReservas, deleteReserva } = useContext(AppContext);
     
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -74,6 +74,9 @@ const ReservaList = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <button
+                                        onClick={async () => {
+                                            await deleteReserva(reserva.id);
+                                        }}
                                         className="text-red-600 hover:text-red-900"
                                     >
                                         Eliminar

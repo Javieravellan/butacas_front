@@ -43,3 +43,18 @@ export async function getAllBookingsToday() {
     }
     return data;
 }
+
+export async function deleteBooking(id: number) {
+    var response = await fetch(`/api/v1/bookings/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        console.error("Error deleting booking:", error);
+        throw new Error(error.toString());
+    }
+}
