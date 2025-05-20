@@ -138,7 +138,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                         </select>
                     </div>
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700">Elegir asientos</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-4">Elegir asientos</label>
                         <div className="flex flex-wrap gap-2">
                             <Seat items={functionSelected?.room.seats!} />
                         </div>
