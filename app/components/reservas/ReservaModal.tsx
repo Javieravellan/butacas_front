@@ -62,6 +62,17 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
+                            <label className="block text-sm font-medium text-gray-700">ID del Cliente</label>
+                            <input
+                                name="customerId"
+                                type="text" maxLength={10}
+                                pattern="[0-9]*"
+                                value={formData.customerId}
+                                onChange={onChange}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            />
+                        </div>
+                        <div>
                             <label className="block text-sm font-medium text-gray-700">Nombre del Cliente</label>
                             <input
                                 type="text"
@@ -95,17 +106,6 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                                 onChange={onChange}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                                 required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">ID del Cliente</label>
-                            <input
-                                name="customerId"
-                                type="text" maxLength={10}
-                                pattern="[0-9]*"
-                                value={formData.customerId}
-                                onChange={onChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
                             />
                         </div>
                         <div>
