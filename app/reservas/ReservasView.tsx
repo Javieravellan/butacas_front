@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { AppContext } from "~/components/reservas/AppReservaContext";
 import ReservaList from "~/components/reservas/ReservasList";
-import { deleteBooking, getAllBookingsToday } from "~/services/billboard.service";
+import { deleteBooking, getAllBookingsToday, getBillboardToday } from "~/services/billboard.service";
 
 export default function ReservasPage() {
   const [reservas, setReservas] = useState<any[]>([]);
+  const [billboard, setBillboard] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   
   const reservasContext = {
     reservas,
+    billboard,
     error,
-    refreshReservas: async () => {},
     deleteReserva: async (id: number) => {
       try {
         setError(null);
@@ -22,22 +23,32 @@ export default function ReservasPage() {
     }
   };
 
+  const fetchBillboard = async () => {
+    setError(null);
+    getBillboardToday()
+      .then(setBillboard)
+      .catch(setError);
+  };
+
   const fetchReservas = async () => {
     try {
-        setError(null);
-        const response = await getAllBookingsToday();
-        console.debug(response);
-        setReservas(response);
-      }
-      catch (error) {
-        setError('Error fetching reservas: ' + error);
-      }
+      setError(null);
+      const response = await getAllBookingsToday();
+      console.debug(response);
+      setReservas(response);
+    }
+    catch (error) {
+      setError('Error fetching reservas: ' + error);
+    }
   }
 
-  useEffect(() => { fetchReservas() }, []);
+  useEffect(() => { 
+    fetchReservas();
+    fetchBillboard();
+  }, []);
 
   return (
-    <AppContext.Provider value={{...reservasContext, refreshReservas: fetchReservas}}>
+    <AppContext.Provider value={{...reservasContext, refreshReservas: fetchReservas, refreshBillboard: fetchBillboard}}>
       <div className="container mx-auto p-4 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8 text-center">Gestión de Reservas</h1>
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">

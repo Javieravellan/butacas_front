@@ -17,18 +17,11 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
         customerAge: '',
         seatIds: [],
     });
-    const [billboard, setBillboard] = useState<Billboard | null>(null);
+
     const [functionSelected, setFunctionSelected] = useState<BillboardMovie | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    // Context global de las reservas
-    const { refreshReservas } = useContext(AppContext);
-
-    useEffect(() => {
-        getBillboardToday()
-            .then(setBillboard)
-            .catch(console.error);
-    }, [])
+    const { billboard, refreshBillboard, refreshReservas } = useContext(AppContext);
 
     const onSelectMovie = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -59,6 +52,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
             setFunctionSelected(null);
             setFormData(null);
             refreshReservas(); // actualiza la lista de reservas
+            refreshBillboard(); // actualiza la cartelera para mostrar las butacas ocupadas
             onClose();
         } catch (error) {
             setError('Error reservando asientos:' + error);
@@ -168,7 +162,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
                         >
                             Cancelar
                         </button>
-                        <ApiButton onClick={handleSubmit} />
+                        <ApiButton onClick={handleSubmit} clazz='bg-blue-600 hover:bg-blue-700 text-white' />
                     </div>
                     <div className="mt-4">
                         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}

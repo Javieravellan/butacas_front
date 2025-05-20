@@ -2,11 +2,12 @@ import { useContext, useState } from 'react';
 import ReservaModal from './ReservaModal';
 import { onlyHours } from '~/utils';
 import { AppContext } from './AppReservaContext';
+import ApiButton from '../ApiButton';
 
 const ReservaList = () => {
     const [showModal, setShowModal] = useState(false);
     const [lastModified, setLastModified] = useState(new Date());
-    const { reservas, refreshReservas, deleteReserva } = useContext(AppContext);
+    const { reservas, refreshReservas, refreshBillboard, deleteReserva } = useContext(AppContext);
     
     const refresh = () => {
         setLastModified(new Date());
@@ -75,15 +76,15 @@ const ReservaList = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button
+                                    <ApiButton
                                         onClick={async () => {
                                             await deleteReserva(reserva.id);
+                                            await refreshBillboard();
                                             refresh();
                                         }}
-                                        className="text-red-600 hover:text-red-900"
-                                    >
-                                        Eliminar
-                                    </button>
+                                        text="Eliminar"
+                                        clazz="bg-red-600 hover:bg-red-700 text-white"
+                                    />
                                 </td>
                             </tr>
                         ))

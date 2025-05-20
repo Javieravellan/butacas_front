@@ -1,16 +1,13 @@
 import { useState } from 'react';
 
-const ApiButton = ({ onClick }: any) => {
+const ApiButton = ({ onClick, text, clazz }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
-    //try {
     await onClick(); // Espera a que la función API termine
-    //} finally {
     setIsLoading(false);
-    //}
   };
 
   return (
@@ -21,7 +18,7 @@ const ApiButton = ({ onClick }: any) => {
         px-4 py-2 rounded-md transition-colors
         ${isLoading 
           ? 'bg-gray-400 cursor-not-allowed' 
-          : 'bg-blue-600 hover:bg-blue-700 text-white'
+          : clazz
         }
       `}
     >
@@ -34,7 +31,7 @@ const ApiButton = ({ onClick }: any) => {
           Procesando...
         </div>
       ) : (
-        'Guardar'
+        !text ? 'Guardar' : text
       )}
     </button>
   );
