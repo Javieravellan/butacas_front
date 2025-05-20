@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const Seat = (props: { items: any[] }) => {
+export const Seat = (props: { items: any[], onSelectedSeats: (seats: any[]) => void }) => {
     const [selectedSeats, setSelectedSeats] = useState<any[]>([]);
 
     const onSelectSeat = (seat: any) => {
@@ -10,6 +10,11 @@ export const Seat = (props: { items: any[] }) => {
             setSelectedSeats([...selectedSeats, {...seat, status: false }]);
         }
     };
+
+    useEffect(() => {
+        // Hacemos esto para asegurar que los datos estén actualizados
+        props.onSelectedSeats(selectedSeats);
+    }, [selectedSeats]);
 
     return (
         <div className="grid grid-cols-3 gap-2 w-full">

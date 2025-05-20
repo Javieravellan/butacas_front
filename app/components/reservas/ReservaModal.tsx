@@ -36,7 +36,6 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                     [name]: value,
                     showTime: funcion.showTime,
                     movie: { name: funcion.movie.name, genre: funcion.movie.genre },
-                    //seats: funcion.room.seats.filter((seat: any) => seat.status === false)
                 });
             }
         });
@@ -47,9 +46,14 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
         setFormData({ ...formData, [name]: value })
     }
 
+    const onSeletedSeats = (seats: any[]) => {
+        setFormData({ ...formData, seats });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        console.log('formData', formData);
+        //onSubmit(formData);
         setFormData(null);
         onClose();
     };
@@ -141,7 +145,7 @@ const ReservaModal = ({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose:
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-4">Elegir asientos</label>
                         <div className="flex flex-wrap gap-2">
-                            <Seat items={functionSelected?.room.seats!} />
+                            <Seat items={functionSelected?.room.seats!} onSelectedSeats={onSeletedSeats} />
                         </div>
                     </div>
                     <div className="flex justify-end">
