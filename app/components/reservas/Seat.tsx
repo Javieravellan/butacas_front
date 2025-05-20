@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Seat = (props: { items: any[] }) => {
-    const [activeIndex, setActiveIndex] = useState(null);
     const [seatsData, setSeatsData] = useState<any[]>([]);
 
-    const toggleItem = (index: any) => {
-        setActiveIndex(activeIndex === index ? null : index);
-    };
+    useEffect(() => {
+        setSeatsData(props.items?.filter(({ status }) => !status));
+    }, [props.items]);
 
     const onSelectSeat = (seat: any) => {
-        console.debug(seat);
+        const seatIndex = seatsData.findIndex((s: any) => s.id === seat.id);
+        if (seatIndex >= 0) {
+            setSeatsData(seatsData.filter((s: any) => s.id !== seat.id));
+        }
+        else {
+            setSeatsData([...seatsData, { ...seat, status: false }]);
+        }
     };
 
     return (
@@ -19,7 +24,7 @@ export const Seat = (props: { items: any[] }) => {
                     key={seat.id}
                     type="button"
                     onClick={() => onSelectSeat(seat)}
-                    className={`p-2 border rounded-md text-center text-sm ${seatsData.some((s: any) => s.id === seat.id)
+                    className={`p-2 border rounded-md text-center text-sm ${seatsData?.some((s: any) => s.id === seat.id)
                         ? 'bg-indigo-100 border-indigo-500 text-indigo-700'
                         : 'bg-gray-50 hover:bg-gray-100'
                         }`}
