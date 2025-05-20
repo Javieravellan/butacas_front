@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 export const Seat = (props: { items: any[], onSelectedSeats: (seats: any[]) => void }) => {
     const [selectedSeats, setSelectedSeats] = useState<any[]>([]);
 
-    const onSelectSeat = (seat: any) => {
-        if (selectedSeats.some((s) => s.id === seat.id)) {
-            setSelectedSeats(selectedSeats.filter((s) => s.id !== seat.id));
+    const onSelectSeat = (seatId: number) => {
+        if (selectedSeats.some((id) => id === seatId)) {
+            setSelectedSeats(selectedSeats.filter((id) => id !== seatId));
         } else {
-            setSelectedSeats([...selectedSeats, {...seat, status: false }]);
+            setSelectedSeats([...selectedSeats, seatId]);
         }
     };
 
@@ -20,12 +20,12 @@ export const Seat = (props: { items: any[], onSelectedSeats: (seats: any[]) => v
         <div className="grid grid-cols-3 gap-2 w-full">
             {props.items?.map((seat: any) => {
                 const isReserved = !seat.status;
-                const isSelected = selectedSeats.some((s) => s.id === seat.id);
+                const isSelected = selectedSeats.some((id) => id === seat.id);
 
                 return <button
                     key={seat.id}
                     type="button"
-                    onClick={() => !isReserved && onSelectSeat(seat)}
+                    onClick={() => !isReserved && onSelectSeat(seat.id)}
                     className={`p-2 border rounded-md text-center text-sm
                             ${isReserved
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
