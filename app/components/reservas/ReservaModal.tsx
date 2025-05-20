@@ -65,6 +65,12 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
         }
     };
 
+    const onCancel = () => {
+        setFunctionSelected(null);
+        setFormData(null);
+        onClose();
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -157,7 +163,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
                     <div className="flex justify-end">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={onCancel}
                             className="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2"
                         >
                             Cancelar

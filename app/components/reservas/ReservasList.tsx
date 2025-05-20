@@ -8,6 +8,11 @@ const ReservaList = () => {
     const [lastModified, setLastModified] = useState(new Date());
     const { reservas, refreshReservas, deleteReserva } = useContext(AppContext);
     
+    const refresh = () => {
+        setLastModified(new Date());
+        refreshReservas();
+    };
+
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="flex justify-between items-center p-4">
@@ -18,10 +23,7 @@ const ReservaList = () => {
                 </div>
                 <div className="">
                     <button className='px-4 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500'
-                        onClick={() => {
-                            setLastModified(new Date())
-                            refreshReservas();
-                        }}
+                        onClick={() => refresh()}
                     >
                         Refrescar
                     </button>&nbsp;
@@ -76,6 +78,7 @@ const ReservaList = () => {
                                     <button
                                         onClick={async () => {
                                             await deleteReserva(reserva.id);
+                                            refresh();
                                         }}
                                         className="text-red-600 hover:text-red-900"
                                     >
