@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ErrorBubble from "~/components/ErrorBubble";
 import { AppContext } from "~/components/reservas/AppReservaContext";
 import ReservaList from "~/components/reservas/ReservasList";
 import { deleteBooking, getAllBookingsToday, getBillboardToday } from "~/services/billboard.service";
@@ -12,6 +13,7 @@ export default function ReservasPage() {
     reservas,
     billboard,
     error,
+    updateError: setError,
     deleteReserva: async (id: number) => {
       try {
         setError(null);
@@ -53,6 +55,7 @@ export default function ReservasPage() {
         <h1 className="text-3xl font-bold mb-8 text-center">Gestión de Reservas</h1>
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
           <div className="lg:col-span-2">
+            <ErrorBubble message={error} onClose={() => setError("")} />
             <ReservaList />
           </div>
         </div>

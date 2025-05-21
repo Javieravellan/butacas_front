@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
-import type { Billboard } from '~/model/billboard.model';
+import React, { useContext, useState } from 'react';
 import type { BillboardMovie } from '~/model/billboard_movie.model';
-import { createBooking, getBillboardToday } from '~/services/billboard.service';
+import { createBooking } from '~/services/billboard.service';
 import { onlyHours } from '~/utils';
 import { Seat } from './Seat';
 import ApiButton from '../ApiButton';
@@ -19,9 +18,8 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
     });
 
     const [functionSelected, setFunctionSelected] = useState<BillboardMovie | null>(null);
-    const [error, setError] = useState<string | null>(null);
 
-    const { billboard, refreshBillboard, refreshReservas } = useContext(AppContext);
+    const { billboard, updateError, refreshBillboard, refreshReservas } = useContext(AppContext);
 
     const onSelectMovie = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -47,7 +45,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
 
     const handleSubmit = async () => {
         try {
-            setError(null)
+            updateError(null)
             await createBooking(formData)
             setFunctionSelected(null);
             setFormData(null);
@@ -55,7 +53,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
             refreshBillboard(); // actualiza la cartelera para mostrar las butacas ocupadas
             onClose();
         } catch (error) {
-            setError('Error reservando asientos:' + error);
+            updateError('Error reservando asientos:' + error);
         }
     };
 
@@ -163,9 +161,6 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
                             Cancelar
                         </button>
                         <ApiButton onClick={handleSubmit} clazz='bg-blue-600 hover:bg-blue-700 text-white' />
-                    </div>
-                    <div className="mt-4">
-                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                     </div>
                 </form>
             </div>
