@@ -1,81 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useContext } from "react";
+import { ButacaContext } from "~/butacas/AppButacaContext";
+import type { Seat } from "~/model/seat.model";
 
-const rooms = [
-    { id: 1, name: 'Sala 1' },
-    { id: 2, name: 'Sala 2' },
-    { id: 3, name: 'Sala 3' },
-    { id: 4, name: 'Sala 4' },
-    { id: 5, name: 'Sala 5' },
-]
+export default function FormButaca(props: { onSent: (e: any) => void }) {
+    const [formButaca, setFormButaca] = useState<Seat>({
+        id: null,
+        number: null, 
+        rowNumber: 0,
+        roomId: 0,
+        roomName: "",
+        status: false,
+    });
 
-export default function FormButaca(props: { onSent: (e: any) => void, butaca?: { id: number, numero: number, fila: number, roomName: string, roomId: number, status: boolean } }) {
-    const { onSent, butaca } = props;
-    const [numero, setNumero] = useState(0);
-    const [fila, setFila] = useState(0);
-    const [roomName, setRoomName] = useState(rooms[0].name);
-    const [roomId, setRoomId] = useState(rooms[0].id);
-    const [status, setStatus] = useState(true);
-
-      // Actualizar el formulario cuando la prop `butaca` cambie
-    useEffect(() => {
-        if (butaca) {
-            setNumero(butaca.numero);
-            setFila(butaca.fila);
-            setRoomName(butaca.roomName);
-            setRoomId(butaca.roomId);
-            setStatus(butaca.status);
-        } else {
-        // Limpiar el formulario si no hay butaca
-            setNumero(0);
-            setFila(0);
-            setRoomName(rooms[0].name);
-            setRoomId(rooms[0].id);
-            setStatus(true);
-        }
-    }, [butaca]);
+    const { rooms } = useContext(ButacaContext);
 
     function handleSubmit(e: any) {
         e.preventDefault();
-        // buscar roomName por roomId
-        if (butaca?.id) {
-            // Actualizar
-            onSent({ id: butaca.id, numero, fila, roomName, roomId, status });
-        } else {
-            // Crear
-            const newButaca = {
-                id: Date.now(),
-                numero,
-                fila,
-                roomId,
-                roomName,
-                status
-            };
-            // enviar al servidor
-
-            // enviar butaca al padre luego del envío
-            onSent(newButaca);
-            setNumero(0);
-            setFila(0);
-            setRoomName(rooms[0].name);
-            setRoomId(rooms[0].id);
-            setStatus(true);
-        }
+        
     }
 
-    function onChange(e: any) {
+    function onInputChange(e: any) {
         const { name, value } = e.target;
-        console.debug({ name, value });
+        setFormButaca({
+            ...formButaca,
+            [name]: value,
+        })
+    }
+    
+    function onChange(e: any) {
+        const { value } = e.target;
         const room = rooms.find((room: any) => room.id === Number(value));
         console.debug(room?.name)
-        setRoomName(room?.name || '');
-        setRoomId(Number(value));
+        setFormButaca({
+            ...formButaca,
+            roomId: Number(value),
+            roomName: room?.name||"",
+        });
     }
 
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">
-                {butaca?.id ? 'Editar Butaca' : 'Agregar Nueva Butaca'}
+                Agregar Nuevo
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -83,12 +50,12 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
                         <label className="block text-sm font-medium text-gray-700">Fila</label>
                         <input
                             type="text"
-                            value={fila}
-                            onChange={(e) => setFila(e.target.value as any)}
+                            value={formButaca.rowNumber|| ""}
+                            name="rowNumber"
+                            onChange={onInputChange}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
                             required
-                            maxLength={1}
-                            placeholder="Ej: A"
+                            maxLength={2}
                         />
                     </div>
 
@@ -96,21 +63,24 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
                         <label className="block text-sm font-medium text-gray-700">Número</label>
                         <input
                             type="text"
-                            value={numero}
-                            onChange={(e) => setNumero(e.target.value as any)}
+                            value={formButaca.number|| ""}
+                            name="number"
+                            onChange={onInputChange}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
                             required
-                            placeholder="Ej: 1"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Tipo</label>
+                        <label className="block text-sm font-medium text-gray-700">Asignar a</label>
                         <select
-                            value={roomId}
+                            value={formButaca.roomId}
                             onChange={onChange}
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
                         >
+                            <option value="" defaultValue={""} hidden>
+                                Selecciona una sala
+                            </option>
                             {rooms.map((room: any) => (
                                 <option key={room.id} value={room.id}>
                                     {room.name}
@@ -125,7 +95,7 @@ export default function FormButaca(props: { onSent: (e: any) => void, butaca?: {
                         type="submit"
                         className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                        {butaca?.id ? 'Actualizar' : 'Agregar'}
+                        Agregar
                     </button>
                 </div>
             </form>
