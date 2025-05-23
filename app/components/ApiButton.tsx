@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ApiButton = ({ onClick, text, clazz }: any) => {
+const ApiButton = ({ onClick, text, clazz, type }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async (e: any) => {
@@ -12,6 +12,7 @@ const ApiButton = ({ onClick, text, clazz }: any) => {
 
   return (
     <button
+      type={type||'button'}
       onClick={handleClick}
       disabled={isLoading}
       className={`
