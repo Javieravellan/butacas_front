@@ -77,7 +77,7 @@ export async function getAllBillboards() {
 }
 
 export async function createBillboard(billboard: Billboard) {
-    var response = await fetch("/api/v1/billboards", {
+    var response = await fetch("/api/v1/billboards" + ((billboard.id) ? `/${billboard.id}` : ''), {
         method: (billboard.id) ? "PUT" : "POST",
         headers: {
             "Content-Type": "application/json",

@@ -1,30 +1,25 @@
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { BillboardContext } from "~/cartelera/BillboardContext";
 import type { Billboard } from "~/model/billboard.model";
 
-export default function FormCartelera(props: { onSent: (e: any) => void, cartelera?: { id: number, status: boolean, start_time: string, end_time: string } }) {
+export default function FormCartelera() {
     const [status, setStatus] = useState(1);
     const [start_time, setStartTime] = useState('');
     const [end_time, setEndTime] = useState('');
-    const { onSent, cartelera } = props;
-    const { createBillboard, refreshBillboard, updateError } = useContext(BillboardContext);
+    const { createBillboard, refreshBillboard, updateError, billboard } = useContext(BillboardContext);
 
     useEffect(() => {
-        if (cartelera) {
-            setStatus(cartelera.status ? 1 : 0);
-            setStartTime(cartelera.start_time);
-            setEndTime(cartelera.end_time);
-        } else {
-            // Limpiar el formulario si no hay cartelera
-            setStatus(0);
-            setStartTime('');
-            setEndTime('');
+        console.debug("FormCartelera: billboard", billboard);
+        if (billboard) {
+            setStatus(billboard.status ? 1 : 0);
+            setStartTime(billboard.startTime || '');
+            setEndTime(billboard.endTime || '');
         }
-    }, [cartelera]);
-
+    }, [billboard]);
     function handleSubmit(e: any) {
         e.preventDefault();
         const newCartelera: Billboard = {
+            id: billboard?.id || undefined,
             status: status === 1 ? true : false,
             startTime: start_time,
             endTime: end_time,
@@ -53,7 +48,7 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">
-                {cartelera?.id ? 'Editar Cartelera' : 'Agregar Nueva Cartelera'}
+                {billboard?.id ? 'Editar Cartelera' : 'Agregar Nueva Cartelera'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -89,7 +84,7 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
                         type="submit"
                         className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                        {cartelera?.id ? 'Actualizar' : 'Agregar'}
+                        {billboard?.id ? 'Actualizar' : 'Agregar'}
                     </button>
                 </div>
             </form>

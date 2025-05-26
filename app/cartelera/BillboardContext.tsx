@@ -3,6 +3,7 @@ import type { Billboard } from "~/model/billboard.model";
 
 interface BillboardContext {
     billboards: Billboard[]; // Replace 'any' with the actual type of your billboard items
+    billboard?: Billboard | null; // Optional billboard for editing
     error: string | null;
     updateError: (error: string | null) => void;
     refreshBillboard: () => Promise<void>;
@@ -13,6 +14,7 @@ interface BillboardContext {
 export const BillboardContext = createContext<BillboardContext>({
     billboards: [],
     error: null,
+    billboard: null,
     updateError: (error: string | null) => {},
     refreshBillboard: async () => {},
     createBillboard: async (billboard: Billboard) => {},

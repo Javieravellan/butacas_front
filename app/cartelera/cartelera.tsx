@@ -9,11 +9,13 @@ import ErrorBubble from '~/components/ErrorBubble';
 export default function Cartelera() {
   // Estado para las carteleras
   const [carteleras, setCarteleras] = useState<Billboard[]>([]);
-  const [cartelera, setCartelera] = useState<any>(null);
+  const [cartelera, setCartelera] = useState<Billboard|null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState<string | null>(null);
+  
   const billboardContext = {
     billboards: carteleras,
+    billboard: cartelera,
     error: null,
     updateError: setError,
     refreshBillboard: async () => { },
@@ -73,10 +75,8 @@ export default function Cartelera() {
       <div className="container mx-auto p-4 max-w-4xl">
         <h1 className="text-2xl font-bold text-center mb-6">Gestión de Carteleras</h1>
 
-        {/* Formulario */}
-        <FormCartelera onSent={onSent} cartelera={cartelera} />
+        <FormCartelera />
 
-        {/* Buscador */}
         <div className="mb-6">
           <input
             type="text"
@@ -87,7 +87,6 @@ export default function Cartelera() {
           />
         </div>
 
-        {/* Tabla de carteleras */}
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
