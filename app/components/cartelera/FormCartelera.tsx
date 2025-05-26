@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { BillboardContext } from "~/cartelera/BillboardContext";
+import type { Billboard } from "~/model/billboard.model";
 
 export default function FormCartelera(props: { onSent: (e: any) => void, cartelera?: { id: number, status: boolean, start_time: string, end_time: string } }) {
     const [status, setStatus] = useState(1);
     const [start_time, setStartTime] = useState('');
     const [end_time, setEndTime] = useState('');
     const { onSent, cartelera } = props;
+    const { createBillboard, refreshBillboard, updateError } = useContext(BillboardContext);
 
     useEffect(() => {
         if (cartelera) {
@@ -21,26 +24,25 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
 
     function handleSubmit(e: any) {
         e.preventDefault();
-        if (cartelera?.id) {
-            // Actualizar en servidor
+        const newCartelera: Billboard = {
+            status: status === 1 ? true : false,
+            startTime: start_time,
+            endTime: end_time,
+        };
 
-            // enviar al padre
-            onSent({ id: cartelera.id, status: status == 1 ? true : false, start_time, end_time });
-        } else {
-            // crear en servidor
-            const newCartelera = {
-                id: Date.now(),
-                status: status === 1 ? true : false,
-                start_time,
-                end_time
-            };
-
-            // enviar al padre luego del envío
-            onSent(newCartelera)
-        }
-        setStatus(0);
-        setStartTime('');
-        setEndTime('');
+        updateError(null); // Limpiar errores previos
+        createBillboard(newCartelera)
+            .then((res) => {
+                console.debug("Cartelera creada:", res);
+                refreshBillboard();
+                setStatus(0);
+                setStartTime('');
+                setEndTime('');
+            }
+            ).catch((error) => {
+                console.error("Error al crear la cartelera:", error);
+                updateError("Error al crear la cartelera: " + error);
+            });
 
     }
 
@@ -78,7 +80,7 @@ export default function FormCartelera(props: { onSent: (e: any) => void, cartele
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Habilitar</label>
-                        <SimpleToggle value={status==1} onChange={handleToggle} />
+                        <SimpleToggle value={status == 1} onChange={handleToggle} />
                     </div>
                 </div>
 
@@ -99,27 +101,25 @@ const SimpleToggle = (props: any) => {
     const { value, onChange } = props;
     const [isOn, setIsOn] = useState(value);
 
-    useEffect(() => {setIsOn(value)}, [value])
+    useEffect(() => { setIsOn(value) }, [value])
     function handleToggle() {
         setIsOn(!isOn);
         if (onChange) {
             onChange(!isOn);
         }
     }
-    
+
     return (
-        <button type="button" style={{verticalAlign: "baseline", marginTop: "0.5rem"}}
-        onClick={() => handleToggle()}
-        className={`w-16 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-            isOn ? 'bg-indigo-600' : 'bg-gray-300'
-        }`}
-        aria-pressed={isOn}
+        <button type="button" style={{ verticalAlign: "baseline", marginTop: "0.5rem" }}
+            onClick={() => handleToggle()}
+            className={`w-16 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${isOn ? 'bg-indigo-600' : 'bg-gray-300'
+                }`}
+            aria-pressed={isOn}
         >
-        <span
-            className={`bg-white w-7 h-7 rounded-full shadow-md transform transition-transform duration-300 ${
-            isOn ? 'translate-x-full' : 'translate-x-0'
-            }`}
-        />
+            <span
+                className={`bg-white w-7 h-7 rounded-full shadow-md transform transition-transform duration-300 ${isOn ? 'translate-x-full' : 'translate-x-0'
+                    }`}
+            />
         </button>
     );
 };

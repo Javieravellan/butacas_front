@@ -1,3 +1,5 @@
+import type { Billboard } from "~/model/billboard.model";
+
 export async function getBillboardToday() {
     var response = await fetch("/api/v1/billboards/today", {
         method: "GET",
@@ -56,5 +58,34 @@ export async function deleteBooking(id: number) {
         const error = await response.json();
         console.error("Error deleting booking:", error);
         throw new Error(error.toString());
+    }
+}
+
+export async function getAllBillboards() {
+    var response = await fetch("/api/v1/billboards", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    var data = await response.json();
+    if (!response.ok) {
+        throw new Error("Error fetching all billboards");
+    }
+    return data;
+}
+
+export async function createBillboard(billboard: Billboard) {
+    var response = await fetch("/api/v1/billboards", {
+        method: (billboard.id) ? "PUT" : "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(billboard),
+    });
+
+    if (!response.ok) {
+        throw new Error("Error creating billboard");
     }
 }
