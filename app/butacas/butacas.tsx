@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import FormButaca from '../components/butacas/FormButaca';
 import { ButacaContext } from './AppButacaContext';
-import { getAllRooms, getAllSeats } from '~/services/room.service';
+import { getAllRooms, getAllSeats, toggleSeatState } from '~/services/room.service';
 import ErrorBubble from '~/components/ErrorBubble';
 import type { Seat } from '~/model/seat.model';
 import type { Room } from '~/model/room.model';
@@ -59,24 +59,19 @@ export function Butacas() {
     butaca.roomName?.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (butaca: Seat) => {
-    setButaca(butaca);
-  };
-
   const handleDelete = (id: number) => {
     setButacas(butacas.filter(butaca => butaca.id !== id));
   };
 
   const toggleEstado = (id: number) => {
-    console.debug('id', id);
-    setButacas(butacas.map(butaca =>
-      butaca.id === id
-        ? {
-          ...butaca,
-          status: !butaca.status
-        }
-        : butaca
-    ));
+    toggleSeatState(id)
+    .then(() => {
+      fetchButacas();
+    })
+    .catch((error) => {
+      console.error('Error toggling seat state:', error);
+      setError(error.toString());
+    });
   };
 
   const onSentButaca = (butaca: Seat) => {

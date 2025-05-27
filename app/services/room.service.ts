@@ -1,4 +1,4 @@
-import type { Seat } from '~/models/seat.model';
+import type { Seat } from '~/model/seat.model';
 
 export async function getAllSeats() {
     var response = await fetch("/api/v1/seats", {
@@ -41,5 +41,18 @@ export async function createSeat(seat: Seat) {
 
     if (!response.ok) {
         throw new Error("Error al crear butaca")
+    }
+}
+
+export async function toggleSeatState(id: number) {
+    var response = await fetch(`/api/v1/seats/${id}/toggle-status`, {
+        method: 'PATCH',
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error("Error al cambiar el estado de la butaca")
     }
 }
