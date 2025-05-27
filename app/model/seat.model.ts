@@ -1,8 +1,8 @@
 export type Seat = {
-    id: number|null;
+    id?: number;
     rowNumber: number|null;
     number: number|null;
     status: boolean;
-    roomName: string;
+    roomName?: string;
     roomId: number;
 }

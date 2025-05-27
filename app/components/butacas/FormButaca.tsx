@@ -6,7 +6,7 @@ import type { Seat } from "~/model/seat.model";
 
 export default function FormButaca(props: { onSent: (e: any) => void }) {
     const [formButaca, setFormButaca] = useState<Seat>({
-        id: null,
+        id: undefined,
         number: null, 
         rowNumber: 0,
         roomId: 0,
@@ -33,7 +33,7 @@ export default function FormButaca(props: { onSent: (e: any) => void }) {
         .then(() => {
             refreshButacas();
             setFormButaca({
-                id: null,
+                id: undefined,
                 number: null, 
                 rowNumber: 0,
                 roomId: 0,
