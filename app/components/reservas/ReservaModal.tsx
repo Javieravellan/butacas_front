@@ -45,7 +45,7 @@ const ReservaModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: any }) =>
 
     const handleSubmit = async () => {
         try {
-            updateError(null)
+            updateError('')
             await createBooking(formData)
             setFunctionSelected(null);
             setFormData(null);

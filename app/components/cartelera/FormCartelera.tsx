@@ -25,7 +25,7 @@ export default function FormCartelera() {
             endTime: end_time,
         };
 
-        updateError(null); // Limpiar errores previos
+        updateError(''); // Limpiar errores previos
         createBillboard(newCartelera)
             .then((res) => {
                 console.debug("Cartelera creada:", res);

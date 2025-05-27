@@ -16,7 +16,7 @@ export default function ReservasPage() {
     updateError: setError,
     deleteReserva: async (id: number) => {
       try {
-        setError(null);
+        setError('');
         await deleteBooking(id);
         setReservas(reservas.filter((reserva) => reserva.id !== id));
       } catch (error) {
@@ -26,15 +26,18 @@ export default function ReservasPage() {
   };
 
   const fetchBillboard = async () => {
-    setError(null);
+    setError('');
     getBillboardToday()
-      .then(setBillboard)
-      .catch(setError);
+      .then((res) => {
+                console.debug('Billboard fetched:', res);
+        setBillboard(res);
+      })
+      .catch(err => setError(err.toString()));
   };
 
   const fetchReservas = async () => {
     try {
-      setError(null);
+      setError('');
       const response = await getAllBookingsToday();
       console.debug(response);
       setReservas(response);

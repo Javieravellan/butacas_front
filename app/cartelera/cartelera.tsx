@@ -58,7 +58,7 @@ export default function Cartelera() {
 
   return (
     <BillboardContext.Provider value={{ ...billboardContext, refreshBillboard: getBillboard }}>
-      <ErrorBubble error={error} onClose={() => setError(null)} />
+      <ErrorBubble message={error} onClose={() => setError(null)} />
       <div className="container mx-auto p-4 max-w-4xl">
         <h1 className="text-2xl font-bold text-center mb-6">Gestión de Carteleras</h1>
 

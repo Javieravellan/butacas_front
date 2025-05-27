@@ -8,10 +8,10 @@ export async function getBillboardToday() {
         },
     });
 
-    var data = await response.json();
     if (!response.ok) {
         throw new Error("Error fetching billboard data");
     }
+    var data = await response.json();
     return data;
 }
 
@@ -37,12 +37,12 @@ export async function getAllBookingsToday() {
         },
     });
 
-    var data = await response.json();
     if (!response.ok) {
         const error = await response.json();
         console.error("Error fetching bookings data:", error);
         throw new Error(error.toString());
     }
+    var data = await response.json();
     return data;
 }
 

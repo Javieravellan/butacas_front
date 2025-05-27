@@ -19,7 +19,7 @@ const ReservaList = () => {
             <div className="flex justify-between items-center p-4">
                 <div className="">
                     <h2 className="text-lg font-medium text-gray-900">Reservas del día</h2>
-                    <p className="text-sm text-gray-500">Total: {reservas.length}</p>
+                    <p className="text-sm text-gray-500">Total: {reservas?.length}</p>
                     <p className="text-sm text-gray-500">Última actualización: {lastModified.toLocaleString()}</p>
                 </div>
                 <div className="">
@@ -48,8 +48,8 @@ const ReservaList = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {reservas.length > 0 ? (
-                        reservas.map((reserva: any) => (
+                    {reservas?.length > 0 ? (
+                        reservas?.map((reserva: any) => (
                             <tr key={reserva.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="text-sm font-medium text-gray-900">{reserva.customer.name}</div>
