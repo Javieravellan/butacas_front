@@ -89,3 +89,18 @@ export async function createBillboard(billboard: Billboard) {
         throw new Error("Error creating billboard");
     }
 }
+
+export async function deleteBillboard(id: number) {
+    var response = await fetch(`/api/v1/billboards/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        console.error("Error deleting billboard:", error);
+        throw new Error(error.toString());
+    }
+}

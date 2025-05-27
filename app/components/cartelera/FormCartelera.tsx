@@ -6,7 +6,7 @@ export default function FormCartelera() {
     const [status, setStatus] = useState(1);
     const [start_time, setStartTime] = useState('');
     const [end_time, setEndTime] = useState('');
-    const { createBillboard, refreshBillboard, updateError, billboard } = useContext(BillboardContext);
+    const { createBillboard, refreshBillboard, updateError, billboard, updateBillboard } = useContext(BillboardContext);
 
     useEffect(() => {
         console.debug("FormCartelera: billboard", billboard);
@@ -33,6 +33,9 @@ export default function FormCartelera() {
                 setStatus(0);
                 setStartTime('');
                 setEndTime('');
+                if (updateBillboard) {
+                    updateBillboard(null);
+                } // Limpiar el formulario después de enviar
             }
             ).catch((error) => {
                 console.error("Error al crear la cartelera:", error);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FormCartelera from '~/components/cartelera/FormCartelera';
-import { createBillboard, getAllBillboards } from '~/services/billboard.service';
+import { createBillboard, deleteBillboard, getAllBillboards } from '~/services/billboard.service';
 import { formatDate } from '~/utils';
 import { BillboardContext } from './BillboardContext';
 import type { Billboard } from '~/model/billboard.model';
@@ -17,10 +17,11 @@ export default function Cartelera() {
     billboards: carteleras,
     billboard: cartelera,
     error: null,
+    updateBillboard: (b:Billboard|null) => setCartelera(b),
     updateError: setError,
     refreshBillboard: async () => { },
     createBillboard: createBillboard,
-    deleteBillboard: async (id: number) => { }
+    deleteBillboard: deleteBillboard
   }
 
   const getBillboard = async () => {
@@ -39,34 +40,20 @@ export default function Cartelera() {
     getBillboard();
   }, []);
 
-  // Filtrar carteleras
   const filteredCarteleras = carteleras.filter(cartelera =>
     cartelera?.startTime?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cartelera?.endTime?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Crear o actualizar cartelera
-  const onSent = (cart: any) => {
-    const index = carteleras.findIndex(c => c?.id === cart?.id);
-    if (index !== -1) {
-      // Actualizar cartelera existente
-      const updatedCarteleras = [...carteleras];
-      updatedCarteleras[index] = cart;
-      setCarteleras(updatedCarteleras);
-    } else {
-      setCarteleras([...carteleras, cart]);
-    }
-    setCartelera(null); // Limpiar el formulario después de enviar
-  };
-
-  // Editar cartelera
   const handleEdit = (cartelera: any) => {
     setCartelera(cartelera);
   };
 
-  // Eliminar cartelera
   const handleDelete = (id: number) => {
-    setCarteleras(carteleras.filter(cartelera => cartelera.id !== id));
+    setError(null);
+    billboardContext.deleteBillboard(id)
+      .then(() => getBillboard())
+      .catch(setError);
   };
 
   return (

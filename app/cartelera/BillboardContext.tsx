@@ -6,6 +6,7 @@ interface BillboardContext {
     billboard?: Billboard | null; // Optional billboard for editing
     error: string | null;
     updateError: (error: string | null) => void;
+    updateBillboard?: (billboard: Billboard|null) => void; // Optional for updating a billboard
     refreshBillboard: () => Promise<void>;
     createBillboard: (billboard: Billboard) => Promise<void>;
     deleteBillboard: (id: number) => Promise<void>;
@@ -15,6 +16,7 @@ export const BillboardContext = createContext<BillboardContext>({
     billboards: [],
     error: null,
     billboard: null,
+    updateBillboard: (billboard: Billboard|null) => {},
     updateError: (error: string | null) => {},
     refreshBillboard: async () => {},
     createBillboard: async (billboard: Billboard) => {},
