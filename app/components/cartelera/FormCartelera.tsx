@@ -1,4 +1,4 @@
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BillboardContext } from "~/cartelera/BillboardContext";
 import type { Billboard } from "~/model/billboard.model";
 
@@ -82,6 +82,39 @@ export default function FormCartelera() {
                     </div>
                 </div>
 
+                <h3 className="h-5">Asignar película</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Películas</label>
+                        <input
+                            type="text"
+                            value={end_time}
+                            onChange={(e) => setEndTime(e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Fecha función</label>
+                        <input
+                            type="datetime-local"
+                            value={end_time}
+                            onChange={(e) => setEndTime(e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Asignar sala</label>
+                        <input
+                            type="text"
+                            value={end_time}
+                            onChange={(e) => setEndTime(e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+                            required
+                        />
+                    </div>
+                </div>
                 <div className="flex justify-end">
                     <button
                         type="submit"
