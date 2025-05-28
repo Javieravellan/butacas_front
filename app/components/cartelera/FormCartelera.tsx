@@ -1,23 +1,28 @@
 import { useContext, useEffect, useState } from "react";
 import { BillboardContext } from "~/cartelera/BillboardContext";
 import type { Billboard } from "~/model/billboard.model";
+import SimpleToggle from "./SimpleToggle";
+import FormFunciones from "./FormFunciones";
+import ApiButton from "../ApiButton";
+import type { BillboardMovie } from "~/model/billboard_movie.model";
 
 export default function FormCartelera() {
     const [status, setStatus] = useState(1);
     const [start_time, setStartTime] = useState('');
     const [end_time, setEndTime] = useState('');
-    const { createBillboard, refreshBillboard, updateError, billboard, updateBillboard } = useContext(BillboardContext);
-
+    const [functions, setFunctions] = useState<BillboardMovie[]>([]);
+    
+    const { createBillboard, refreshBillboard, updateError, billboard, updateBillboard, updateIsSaved } = useContext(BillboardContext);
+    
     useEffect(() => {
-        console.debug("FormCartelera: billboard", billboard);
         if (billboard) {
             setStatus(billboard.status ? 1 : 0);
             setStartTime(billboard.startTime || '');
             setEndTime(billboard.endTime || '');
         }
     }, [billboard]);
-    function handleSubmit(e: any) {
-        e.preventDefault();
+
+    function handleSubmit() {
         const newCartelera: Billboard = {
             id: billboard?.id || undefined,
             status: status === 1 ? true : false,
@@ -25,6 +30,9 @@ export default function FormCartelera() {
             endTime: end_time,
         };
 
+        if (functions.length > 0) {
+            newCartelera.billboardMovies = functions;
+        }
         updateError(''); // Limpiar errores previos
         createBillboard(newCartelera)
             .then((res) => {
@@ -33,9 +41,14 @@ export default function FormCartelera() {
                 setStatus(0);
                 setStartTime('');
                 setEndTime('');
+                setFunctions([]); 
+                
                 if (updateBillboard) {
                     updateBillboard(null);
-                } // Limpiar el formulario después de enviar
+                }
+                if (updateIsSaved) {
+                    updateIsSaved(true); // esta bandera la uso para indicar al otro componente que se ha guardado y debe resetear la data.
+                }
             }
             ).catch((error) => {
                 console.error("Error al crear la cartelera:", error);
@@ -48,12 +61,20 @@ export default function FormCartelera() {
         setStatus(value ? 1 : 0);
     }
 
+    function onFunctionAdded(func: any) {
+        setFunctions((prev) => [...prev, func]);
+    }
+
+    function onFunctionDeleted(func: any) {
+        setFunctions((prev) => prev.filter(f => f.movie.id !== func.movie.id || f.room.id !== func.room.id));
+    }
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-4">
-                {billboard?.id ? 'Editar Cartelera' : 'Agregar Nueva Cartelera'}
+                {billboard?.id ? 'Editar' : 'Agregar nueva'}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Fecha/Hora Inicio</label>
@@ -82,75 +103,17 @@ export default function FormCartelera() {
                     </div>
                 </div>
 
-                <h3 className="h-5">Asignar película</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Películas</label>
-                        <input
-                            type="text"
-                            value={end_time}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Fecha función</label>
-                        <input
-                            type="datetime-local"
-                            value={end_time}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Asignar sala</label>
-                        <input
-                            type="text"
-                            value={end_time}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-                            required
-                        />
-                    </div>
-                </div>
+                <br />
+                <h3 className="h-5">Asignar películas</h3>
+                <FormFunciones onFunctionAdded={onFunctionAdded} onDeleted={onFunctionDeleted} />
                 <div className="flex justify-end">
-                    <button
+                    <ApiButton onClick={handleSubmit}
                         type="submit"
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        {billboard?.id ? 'Actualizar' : 'Agregar'}
-                    </button>
+                        text={billboard?.id ? 'Actualizar' : 'Guardar'}
+                        clazz="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                     />
                 </div>
             </form>
         </div>
     );
 }
-
-const SimpleToggle = (props: any) => {
-    const { value, onChange } = props;
-    const [isOn, setIsOn] = useState(value);
-
-    useEffect(() => { setIsOn(value) }, [value])
-    function handleToggle() {
-        setIsOn(!isOn);
-        if (onChange) {
-            onChange(!isOn);
-        }
-    }
-
-    return (
-        <button type="button" style={{ verticalAlign: "baseline", marginTop: "0.5rem" }}
-            onClick={() => handleToggle()}
-            className={`w-16 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${isOn ? 'bg-indigo-600' : 'bg-gray-300'
-                }`}
-            aria-pressed={isOn}
-        >
-            <span
-                className={`bg-white w-7 h-7 rounded-full shadow-md transform transition-transform duration-300 ${isOn ? 'translate-x-full' : 'translate-x-0'
-                    }`}
-            />
-        </button>
-    );
-};

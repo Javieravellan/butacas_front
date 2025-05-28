@@ -1,5 +1,5 @@
 export type BillboardMovie = {
-    id: number;
+    id?: number;
     showTime: string;
     movie: {
         id: number;
@@ -10,7 +10,7 @@ export type BillboardMovie = {
         id: number;
         name: string;
         number: number; // capacity
-        seats: [
+        seats?: [
             {
                 id: number;
                 number: number;
