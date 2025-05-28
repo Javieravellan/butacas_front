@@ -1,5 +1,7 @@
+import wfetch from "~/wfetch";
+
 export async function getAllMovies() {
-    const response = await fetch("/api/v1/movies", {
+    const response = await wfetch("/api/v1/movies", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

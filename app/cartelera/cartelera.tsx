@@ -35,7 +35,7 @@ export default function Cartelera() {
           return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
         });
         setCarteleras(res);
-      }).catch(setError);
+      }).catch((err:any) => setError(err.toString()));
   }
 
   // Datos iniciales (simulando una API)

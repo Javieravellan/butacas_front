@@ -1,5 +1,6 @@
 export type BillboardMovie = {
     id?: number;
+    status?: boolean;
     showTime: string;
     movie: {
         id: number;

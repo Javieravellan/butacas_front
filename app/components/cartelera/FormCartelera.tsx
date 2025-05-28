@@ -19,6 +19,9 @@ export default function FormCartelera() {
             setStatus(billboard.status ? 1 : 0);
             setStartTime(billboard.startTime || '');
             setEndTime(billboard.endTime || '');
+            if (billboard.billboardMovies) {
+                setFunctions(billboard.billboardMovies);
+            }
         }
     }, [billboard]);
 
@@ -32,8 +35,9 @@ export default function FormCartelera() {
 
         if (functions.length > 0) {
             newCartelera.billboardMovies = functions;
+            console.debug("Funciones asignadas:", functions);
         }
-        updateError(''); // Limpiar errores previos
+        updateError('');
         createBillboard(newCartelera)
             .then((res) => {
                 console.debug("Cartelera creada:", res);
@@ -65,8 +69,12 @@ export default function FormCartelera() {
         setFunctions((prev) => [...prev, func]);
     }
 
-    function onFunctionDeleted(func: any) {
-        setFunctions((prev) => prev.filter(f => f.movie.id !== func.movie.id || f.room.id !== func.room.id));
+    function onFunctionDeleted(func: BillboardMovie) {
+        console.debug(functions);
+        const filtered = functions.filter(f => !(f.movie.id === func.movie.id && f.room.id === func.room.id));
+        console.debug("Funciones después de eliminar:", filtered);
+        setFunctions(filtered);
+
     }
 
     return (

@@ -1,7 +1,8 @@
 import type { Billboard } from "~/model/billboard.model";
+import wfetch from "~/wfetch";
 
 export async function getBillboardToday() {
-    var response = await fetch("/api/v1/billboards/today", {
+    var response = await wfetch("/api/v1/billboards/today", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -16,7 +17,7 @@ export async function getBillboardToday() {
 }
 
 export async function createBooking(booking: any) {
-    var response = await fetch("/api/v1/bookings", {
+    var response = await wfetch("/api/v1/bookings", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -30,7 +31,7 @@ export async function createBooking(booking: any) {
 }
 
 export async function getAllBookingsToday() {
-    var response = await fetch("/api/v1/bookings/today", {
+    var response = await wfetch("/api/v1/bookings/today", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -39,7 +40,6 @@ export async function getAllBookingsToday() {
 
     if (!response.ok) {
         const error = await response.json();
-        console.error("Error fetching bookings data:", error);
         throw new Error(error.toString());
     }
     var data = await response.json();
@@ -47,7 +47,7 @@ export async function getAllBookingsToday() {
 }
 
 export async function deleteBooking(id: number) {
-    var response = await fetch(`/api/v1/bookings/${id}`, {
+    var response = await wfetch(`/api/v1/bookings/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export async function deleteBooking(id: number) {
 }
 
 export async function getAllBillboards() {
-    var response = await fetch("/api/v1/billboards", {
+    var response = await wfetch("/api/v1/billboards", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export async function getAllBillboards() {
 }
 
 export async function createBillboard(billboard: Billboard) {
-    var response = await fetch("/api/v1/billboards" + ((billboard.id) ? `/${billboard.id}` : ''), {
+    var response = await wfetch("/api/v1/billboards" + ((billboard.id) ? `/${billboard.id}` : ''), {
         method: (billboard.id) ? "PUT" : "POST",
         headers: {
             "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export async function createBillboard(billboard: Billboard) {
 }
 
 export async function deleteBillboard(id: number) {
-    var response = await fetch(`/api/v1/billboards/${id}`, {
+    var response = await wfetch(`/api/v1/billboards/${id}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",

@@ -9,7 +9,6 @@ const wfetch = async (url: string, options?: RequestInit, timeout: number = 3000
             ...options,
             signal: abortController.signal,
             headers: {
-                'Content-Type': 'application/json',
                 ...options?.headers,
             },
         });

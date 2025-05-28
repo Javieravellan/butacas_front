@@ -29,7 +29,7 @@ export default function ReservasPage() {
     setError('');
     getBillboardToday()
       .then((res) => {
-                console.debug('Billboard fetched:', res);
+        console.debug('Billboard fetched:', res);
         setBillboard(res);
       })
       .catch(err => setError(err.toString()));
@@ -42,8 +42,8 @@ export default function ReservasPage() {
       console.debug(response);
       setReservas(response);
     }
-    catch (error) {
-      setError('Error fetching reservas: ' + error);
+    catch (error:any) {
+      setError(error.toString());
     }
   }
 

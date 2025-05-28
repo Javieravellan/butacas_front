@@ -4,7 +4,7 @@ const ErrorBubble = ({ message, onClose }: any) => {
     console.log("ErrorBubble", message);
   return (
     <div className="fixed top-4 right-4 z-50 ">
-      <div className="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-start max-w-xs">
+      <div style={{width: 'min-content'}} className="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-start">
         <div className="flex-1">
           <p className="text-sm font-medium">{message}</p>
         </div>

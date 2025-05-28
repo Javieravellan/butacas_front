@@ -73,6 +73,7 @@ export default function FormFunciones({onFunctionAdded, onDeleted}: { onFunction
                 genre: selectedMovie?.genre || '',
             },
             showTime: showTime,
+            status: true,
             room: {
                 id: selectedRoom?.id!,
                 name: selectedRoom?.name || '',
