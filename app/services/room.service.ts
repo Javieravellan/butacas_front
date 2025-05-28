@@ -1,7 +1,8 @@
 import type { Seat } from '~/model/seat.model';
+import wfetch from '~/wfetch';
 
 export async function getAllSeats() {
-    var response = await fetch("/api/v1/seats", {
+    var response = await wfetch("/api/v1/seats", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -16,7 +17,7 @@ export async function getAllSeats() {
 }
 
 export async function getAllRooms() {
-    var response = await fetch("/api/v1/rooms", {
+    var response = await wfetch("/api/v1/rooms", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -31,7 +32,7 @@ export async function getAllRooms() {
 }
 
 export async function createSeat(seat: Seat) {
-    var response = await fetch("/api/v1/seats", {
+    var response = await wfetch("/api/v1/seats", {
         body: JSON.stringify(seat),
         method: 'post',
         headers: {
@@ -40,12 +41,12 @@ export async function createSeat(seat: Seat) {
     })
 
     if (!response.ok) {
-        throw new Error("Error al crear butaca")
+        throw new Error("Error al crear butaca: " + await response.text())
     }
 }
 
 export async function toggleSeatState(id: number) {
-    var response = await fetch(`/api/v1/seats/${id}/toggle-status`, {
+    var response = await wfetch(`/api/v1/seats/${id}/toggle-status`, {
         method: 'PATCH',
         headers: {
             'content-type': 'application/json'
@@ -53,6 +54,6 @@ export async function toggleSeatState(id: number) {
     })
 
     if (!response.ok) {
-        throw new Error("Error al cambiar el estado de la butaca")
+        throw new Error("Error al cambiar el estado de la butaca: " + await response.text());
     }
 }

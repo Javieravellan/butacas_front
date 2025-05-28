@@ -37,7 +37,7 @@ export function Butacas() {
     })
     .catch((error) => {
       console.error('Error fetching butacas:', error);
-      setError(error);
+      setError(error.toString());
     });
   }
 
@@ -45,7 +45,7 @@ export function Butacas() {
     setError(null);
     getAllRooms()
     .then(setRooms)
-    .catch(setError);
+    .catch(err => setError(err.toString()));
   };
 
   useEffect(() => {
@@ -69,7 +69,6 @@ export function Butacas() {
       fetchButacas();
     })
     .catch((error) => {
-      console.error('Error toggling seat state:', error);
       setError(error.toString());
     });
   };

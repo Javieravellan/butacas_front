@@ -26,7 +26,6 @@ export default function FormFunciones({onFunctionAdded, onDeleted}: { onFunction
             if (!Array.isArray(data)) return;
             setMovies(data);
         }).catch((error) => {
-            console.error("Error al obtener las películas:", error);
             updateError("Error al obtener las películas: " + error);
         });
 
@@ -36,7 +35,6 @@ export default function FormFunciones({onFunctionAdded, onDeleted}: { onFunction
             if (!Array.isArray(data)) return;
             setRooms(data);
         }).catch((error) => {
-            console.error("Error al obtener las salas:", error);
             updateError("Error al obtener las salas: " + error);
         })
     }, [])
